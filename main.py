@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 import sys
 from auth import MiBand3
 from cursesmenu import *
