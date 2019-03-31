@@ -1,0 +1,13 @@
+#!/usr/bin/env python2
+
+import sys
+from auth import MiBand3
+
+MAC_ADDR = sys.argv[1]
+MSG = sys.stdin.read()
+
+print 'Attempting to connect to ', MAC_ADDR
+band = MiBand3(MAC_ADDR, debug=True)
+band.setSecurityLevel(level = "medium")
+band.authenticate()
+band.send_custom_alert(4, MSG)
