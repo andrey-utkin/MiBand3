@@ -308,23 +308,35 @@ class MiBand3(Peripheral):
         print('Change date and time')
         svc = self.getServiceByUUID(UUIDS.SERVICE_MIBAND1)
         char = svc.getCharacteristics(UUIDS.CHARACTERISTIC_CURRENT_TIME)[0]
-        # date = raw_input('Enter the date in dd-mm-yyyy format\n')
-        # time = raw_input('Enter the time in HH:MM:SS format\n')
-        #
-        # day = int(date[:2])
-        # month = int(date[3:5])
-        # year = int(date[6:10])
-        # fraction = year / 256
-        # rem = year % 256
-        #
-        # hour = int(time[:2])
-        # minute = int(time[3:5])
-        # seconds =  int(time[6:])
-        #
-        # write_val =  format(rem, '#04x') + format(fraction, '#04x') + format(month, '#04x') + format(day, '#04x') + format(hour, '#04x') + format(minute, '#04x') + format(seconds, '#04x') + format(5, '#04x') + format(0, '#04x') + format(0, '#04x') +'0x16'
-        # write_val = write_val.replace('0x', '\\x')
-        # print(write_val)
-        char.write('\xe2\x07\x01\x1e\x00\x00\x00\x00\x00\x00\x16', withResponse=True)
+
+        date = datetime.now()
+        day = date.day
+        month = date.month
+        year = date.year
+        fraction = year / 256
+        rem = year % 256
+
+        hour = date.hour
+        minute = date.minute
+        seconds = date.second
+
+        import struct
+        write_val = struct.pack(
+                'B' * 10 + 'B',
+                rem,
+                fraction,
+                month,
+                day,
+                hour,
+                minute,
+                seconds,
+                5,
+                0,
+                0,
+                0x16
+                )
+
+        char.write(write_val, withResponse=True)
         raw_input('Date Changed, press any key to continue')
     def dfuUpdate(self, fileName):
         print('Update Firmware/Resource')
